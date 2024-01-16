@@ -22,9 +22,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('transaction', TransactionController::class);
-Route::patch('refund-transaction/{transaction_id}', [TransactionController::class, 'refund_to_user']);
-Route::apiResource('account', AccountController::class);
-Route::apiResource('user', UserController::class);
-
-Route::get('all-routes', [Controller::class, 'all_routes']);
+Route::prefix('v1')->group(function(){
+    Route::middleware('auth:sanctum')->group(function() {
+        Route::apiResource('/transaction', TransactionController::class);
+        Route::patch('/refund-transaction/{transaction_id}', [TransactionController::class, 'refund_to_user']);
+        Route::apiResource('/account', AccountController::class);
+    });
+    
+    Route::post('/login', [Controller::class, 'login']);
+    Route::apiResource('/user', UserController::class);
+    Route::get('/all-routes', [Controller::class, 'all_routes']);
+});

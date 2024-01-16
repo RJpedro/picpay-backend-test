@@ -8,6 +8,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Contact;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
@@ -339,5 +341,16 @@ class Controller extends BaseController
                 ],
             ],
         ];
+    }
+
+    public static function login(Request $request)
+    {
+        if(Auth::attempt($request->only('email', 'password'))) {
+            $token = Auth::user()->createToken('user_token')->plainTextToken;
+
+            return response()->json(['message' => 'Authorized', 'access_token' => $token], 200);
+        }
+
+        return response()->json(['message' => 'Invalid login credentials.'], 401);
     }
 }

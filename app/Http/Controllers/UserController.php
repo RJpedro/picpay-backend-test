@@ -10,6 +10,13 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct() {
+        $this->middleware('auth:sanctum')->only(['update', 'show', 'index', 'destroy']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         return response()->json(User::all(), 200);
