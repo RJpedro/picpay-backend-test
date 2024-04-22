@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('value')->nullable(false);
-            $table->integer('payer_id')->nullable(false);
-            $table->integer('payee_id')->nullable(false);
+            $table->unsignedBigInteger('payer_id');
+            $table->unsignedBigInteger('payee_id');
+            $table->foreign('payer_id')->references('id')->on('users')->nullable(false);
+            $table->foreign('payee_id')->references('id')->on('users')->nullable(false);
             $table->string('status')->default('pending');
             $table->timestamps();
         });

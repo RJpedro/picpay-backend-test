@@ -1,8 +1,6 @@
 <?php
-
-use App\Http\Controllers\Api\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,15 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('v1')->group(function(){
-    Route::post('/login', [Controller::class, 'login']);
-    Route::get('/all-routes', [Controller::class, 'all_routes']);
+    Route::middleware('auth:sanctum')->group(function() {
+        Route::apiResource('/account', AccountController::class);
+    });
 });
-
-include_once 'Api/account.php';
-include_once 'Api/transaction.php';
-include_once 'Api/user.php';

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Contact;
+use App\Mail\Api\Contact;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +27,7 @@ class Controller extends BaseController
 
     public static function user_data($user_id)
     {
-        $user = User::where('id', $user_id)->first();
-
-        return $user;
+        return User::where('id', $user_id)->first();
     }
 
     public static function verify_empty_data($data, $property, $message)
@@ -352,5 +350,15 @@ class Controller extends BaseController
         }
 
         return response()->json(['message' => 'Invalid login credentials.'], 401);
+    }
+
+    public static function general_response($callback, $status, $success_message, $error_message)
+    {
+        try {
+            $data = $callback();
+            return response()->json(['message' => $success_message, 'data' => $data], $status);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $error_message, 'data' => $th->getMessage() .' - '. $th->getLine()], 500);
+        }
     }
 }
